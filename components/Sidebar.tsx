@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {cn} from '@/lib/utils'
 import { usePathname } from 'next/navigation'
+import Footer from './Footer'
 
 
 
@@ -56,7 +57,7 @@ items-center gap-2'
 })}
 USER
    </nav>
-  FOOTER
+<Footer user={user}/>
     </section>
   )
 }
