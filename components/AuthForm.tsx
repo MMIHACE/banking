@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import PlaidLink from './PlaidLink';
 
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -35,21 +36,32 @@ const AuthForm = ({type}: {type: string}) => {
 
         // 1. Define your form.
         const form = useForm<z. infer<typeof formSchema>>({
-          resolver: zodResolver(formSchema),
-          defaultValues: {
+        resolver: zodResolver(formSchema),
+        defaultValues: {
             email: "",
             password: ""
-          },
+        },
         })
-       
+    
         // 2. Define a submit handler.
-       const onSubmit = async (data: z.infer<typeof formSchema>) =>{
-          setIsLoading(true);
-          try{
+    const onSubmit = async (data: z.infer<typeof formSchema>) =>{
+        setIsLoading(true);
+        try{
             if (type === 'sign-up') {
-               const newUser = await  signUp(data);
-
-                setUser(newUser );
+                const userData = {
+                    firstName: data.firstName!,
+                    lastName: data.lastName!,
+                    address1: data.address1!,
+                    city: data.city!,
+                    state: data.state!,
+                    postalCode: data.postalCode!,
+                    dateOfBirth: data.dateOfBirth!,
+                    ssn: data.ssn!,
+                    email: data.email,
+                    password: data.password
+                }
+            const newUser = await  signUp(userData);
+                setUser(newUser);
                 
             }
 
@@ -70,7 +82,7 @@ const AuthForm = ({type}: {type: string}) => {
         }
     }
 
-  return (
+return (
     <section className='auth-form'>
     <header className='flex flex-col gap-5 md:gap-8'>
     <Link href="/"
@@ -87,25 +99,27 @@ items-center gap-1 '
     /> 
     <h1 className='text-26 font-ibm-plex-serif font-bold text-black-1'>Horizon</h1>
 </Link>
+
 <div className='flex flex-col gap-1 md:gap-3'>
     <h1 className='text-24 lg:text-36 
     font-semibold text-gray-900'>{user
         ? 'Link Account'
-    : type==='sign-in'
+    : type ==='sign-in'
     ? 'Sign-In'
 :'Sign-UP'}
 <p className='text-16 fpnt-normal text-gray-600'>
     {user 
     ? 'Link your account to get started'
-: 'Please enter your details'}</p>
+: 'Please enter your details'}
+</p>
     </h1>
 </div>
     </header>
     {user ? (
         <div className='flex flex-col gap-4'>
-            {/*PlaidLink */}
+          <PlaidLink  user={user} variant='primary'/>
         </div>
-  ): (  
+        ): (  
 
         <>
     <Form {...form}>
@@ -123,7 +137,7 @@ items-center gap-1 '
               label='Address' placeholder='Enter your specific address'/>
 
             <CustomInput control={form.control} name='city' 
-              label='CIty' placeholder='Enter your city'/>
+              label='City' placeholder='Enter your city'/>
 
             <div className='flex gap-4'>
             <CustomInput control={form.control} name='state' 
@@ -136,7 +150,7 @@ items-center gap-1 '
             <CustomInput control={form.control} name='dateOfBirth' 
             label='Date of Birth' placeholder='YYY-MM=DD'/>
 
-<CustomInput control={form.control} name='ssn' 
+            <CustomInput control={form.control} name='ssn' 
             label='SSN' placeholder='Example: 1234'/>
             </div>
 
@@ -159,7 +173,7 @@ items-center gap-1 '
                 Loading....
                 </>
             ) : type  === 'sign-in'
-             ? 'Sign In' : 'Sign Up'}
+            ? 'Sign In' : 'Sign Up'}
             </Button>
             </div>
         </form>
@@ -177,7 +191,7 @@ items-center gap-1 '
         </Link>
     </footer>
         </>
-    )}
+    )} 
     </section>
   )
 }
